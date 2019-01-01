@@ -1,0 +1,78 @@
+﻿NGUI 相关知识点
+ 
+创建基本步骤： 导入 NGUI 插件  --> 选择 NGUI --> 选择 Create --> 选择创建想要的组件 （开始先创建3D UI 或者 2D UI）
+
+创建 2D UI 后  NGUI 自动生成如下层级：
+
+-- UI Root
+    -- Camera
+    
+   NGUI 相关核心脚本
+   
+   ** UI Root.cs
+   
+   Scaling Style :  UI 的缩放模式，主要有三种；
+                          Pixel Perfect（像素缩放） 该模式下永远保持 UI 像素大小不变  该模式缺点为 在高分辨率下 UI 会显得特别小， 在低分辨率下 UI 会显得特别大；
+                          Fixed Size （自适应缩放） 该模式下 UI 会根据 屏幕分辨率 和 Manual Height 的值的比例 自动缩放；比如设置 Manual Height 的值为 1000，一张 100*100 的图片在 1000     分辨率的情况下占 1/10 高度，那么当放到一个 500 分辨率下的屏幕中，该 UI 依然占 1/10 高度，图片尺寸被自动缩放到 50*50；
+                          Fixed Size On Mobiles（根据平台不同选择不同模式缩放） 该模式下 UI 在 PC Mac Linux 上自动采用 Pixel Perfect，在移动端上自动采用 fixed Size；
+                          
+    ** UI Panel.cs
+    
+    Alpha： 可以控制该层级下所有 widget 的 alpha 值， 因为所有 UI 控件都继承自 widget  所以所有 UI 子物体 都会被该 alpha 值控制；
+    Depth ： 深度 控制渲染顺序  每一个 panel 都有一个 depth ， 每一个 widget 也有一个 depth； depth高则优先渲染， 但是 panel 的 depth 优先级高于 widget 的优先级，也就是说无论怎么提高
+                   控件的深度都不会显示在 panel的前面； 有多个panel时，尽量保证这些panel不要共用一个depth，否则会导致NGUI渲染时无法以一个drawcall完成，大大增加性能消耗
+                   
+  ** UI Camera.cs
+
+  主要包括 UI 事件的 监听，分发，覆盖范围为此 Camera 渲染的所有 GameObject；
+  事件源包括：鼠标，触摸，键盘，手柄
+  事件包括： 悬停，按下/抬起，选中/取消选中，点击，双击，拖拽/释放，文本输入，tips显示，鼠标滚轮滑动，键盘输入
+  
+  Event Type : 
+  
+  
+  == UI Label ==
+  
+  overflow ： 调整字体溢出效果 ， shrink content 模式下保证文本不会溢出所指定范围，为了保证显示全部文本内容，字体会随着文本字数的增加而减小；
+                     Clamp Content 模式下会自动剔除超出范围的文本内容  Resize Freely 模式下文本框大小会自动根据文本内容调整  Resize Height 模式下保持文本框宽度，高度则随文本内容调整；
+  Alignment：对齐方式   左对齐 右对齐 中间对齐 等   也可通过  pivot 来控制对齐
+  Effect ： 描边 阴影特效
+  Max Lines ： 最大行数  0 表示无限制
+  Label 放到 scroll view 当中好像看不见...  只能另外创建一个panel 存放Label 设置其深度大于scroll view的深度...
+  
+  
+  == UI Sprite ==
+  
+  Anchors : 锚点设置 ，  Type 设置为 unified 则只有一个对齐目标    设置为 advanced 则有多个对齐目标；  																											
+     
+    
+  UI Drag Drop Item 对于单个物体的拖动 
+  UI Drag Scroll View  新建一个 widget ，挂上该脚本 则在该区域范围内都可对指定的 scroll view 操作
+  UI Drag Drop Root
+  
+  
+  == UI Toggle ==
+  
+  Group  设定同组 Toggle 为 0 时表示没有，即可以同时多选 否则为单选框功能， starting state 设置初始状态 是否显示，   state Transition ： Sprite 设置 选中状态显示图片， Transition 设置单选框状态改变的过渡状态
+  Toggle 属性中可通过 value 值获取到 当前 Toggle 的选定状态  选中返回 true 未选中返回 false； activeSprite 属性获取当前选中状态的Toggle的Sprite；
+  
+  == UIEventListener.cs ==
+  
+  NGUI 中UI事件消息的分发机制，通过对应的委托来完成相应事件  其中包括 onClick  onPress  OnDrag 等 
+  通过静态函数 static public UIEventListener Get（GameObject go） 来获取对应 物体上的 UIEventListener ； 然后就可以对应添加各种事件；  
+  
+  == property Binding ==
+  数据绑定  针对 source target 两个指定的对象 控制互相绑定的属性  也可以添加自己的脚本  通过 PropertyReference 类设置
+  
+  == UI Grid ==
+  有点需要注意  排列的时候总是从（0,0,0）开始排列的  也就是首个元素的位置一定是原点...    类似还有一个 UI Table；
+  所以执行后 位置就会偏移  只能手动控制.. 怎么搞？？... 
+  
+  == UI Button Scale ==
+  能够控制按钮被鼠标点击 悬浮选中等时的 scale   做出动态缩放的效果    类似还有 UI Button Rotation 等；
+  
+  == UI ScrollView == 
+  配合 SpringPanel 类   SpringPanel.Begin 方法 能保持 view 切换时回到之前原来的位置
+  cancel drag if fits 勾上该选项 则如果 scrollView 中没有填满  则不会有 拖动效果
+  
+                   
