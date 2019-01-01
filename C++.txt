@@ -1,0 +1,203 @@
+﻿------------ C++ ---------------
+
+1.  指针 和 引用
+指针： 指针是一个 变量 ； 一个用来存储 地址 的变量  指向 内存的一个 存储单元
+引用： 只是原变量的一个 别名，和原变量实质上是同一个东西，在 内存中占用相同的存储单元
+eg.  int a = 1;   int *p = &a;
+       p是指针变量  指向 a 的存储单元地址    & 可以取到变量的存储地址
+       int a = 1;   int &b = a;
+       b是整型 a 的引用
+       
+ 引用不可以为空 必须初始化； 指针可以是空值，可以在任何时候初始化；
+ 指针可以有多级 eg. int **p;
+ 指针初始化后 可以改变指向其他的存储单元； 引用初始化后就不再改变（从一而终）；
+ sizeof（引用）： 得到的是 该引用指向变量的大小； sizeof（指针）： 得到的是 指针本身的大小；
+ 
+ 
+ 2.  #include<cmath> 数学头文件
+ int bas（int）：  返回 绝对值；  double sqrt（double）：返回 平方根； double floor（double）： 返回 最接近参数的最大整数；  double fabs（double）： 返回 任意一个十进制数的绝对值；
+     #include<cstring>   #include<string>   #include<ctime> 日期时间头文件；
+ 
+ 3. 数组
+ c++支持 多维数组 ：  int threedim[5][10][4]  这是一个一个三维数组
+ 二维数组的初始化 ：  int  a[3][4] = {  { 0,1,2,3 },  { 4,5,6,7 }, { 8,9,10,11 }, };    也可以不内嵌括号  int  a[ 3][ 4] ={  0,1,2,3,4,5,6,7,8,9,10,11 };
+ 
+ 指向数组的指针：    double  balance[ 10] ;   声明一个长度为 10 的double数组， 则 balance 是一个指向 首个元素 的指针  也就是 *balance = balance[ 0 ]   使用数组名作为常量指针是合法的
+                                *（balance + 4） = balance[ 4 ]    eg.  double *p  = balance； 然后就可以使用  *p  *( p+1 )  *( p+2 ) 等访问数组元素   输出 p 是地址  输出 *p  是数值
+  4. 指针
+  指针可设为NULL 即空指针
+  可对指针进行 算术运算 ： ++   --   +    -     eg.    int *ptr;    假设 ptr 指向一个 地址 为 1000  那么 ptr++  则会指向下一个整数位置  往后移动 4 个字节 到1004；
+  可对指针使用 关系运算符 进行比较 ： ==  >  <     如 p1  p2 指向数组中不同元素  可对 p1  p2 进行大小比较
+  
+  指针数组：  存储指针的数组       eg.   
+  
+  int main ()
+{
+   int  var[3] = {10, 100, 200};
+   int *ptr[3];
+ 
+   for (int i = 0; i < 3; i++)
+   {
+      ptr[i] = &var[i]; // 赋值为整数的地址
+   }
+   for (int i = 0; i < 3; i++)
+   {
+      cout << "Value of var[" << i << "] = ";
+      cout << *ptr[i] << endl;
+   }
+   return 0;
+}
+  
+  **  可以用一个 指向 字符串 的指针数组来存储 一个字符串列表  eg.
+  int main ()
+{
+ const char *names[4] = {
+                   "Zara Ali",
+                   "Hina Ali",
+                   "Nuha Ali",
+                   "Sara Ali",
+   };
+ 
+   for (int i = 0; i < 4; i++)
+   {
+      cout << "Value of names[" << i << "] = ";
+      cout << names[i] << endl;                           //   names[i]   输出字符串的值   如 names[0] = "Zara Ali"
+      cout << *names[i] << endl;                        //    *names[i]   输出 当前指针 指向的字符串 的首地址的值     如  *names[0] = "Z" 
+   }
+   return 0;
+}
+  
+  从函数返回指针也是可以的 :  int  * myFunc() {  ...  }
+  指向指针的指针 ：　顾名思义　第一个指针指向第二个指针的地址　第二个指针指向实际指向的地址　int  **p;
+  指针可传递给函数 ：  void  getSeconds( unsigned  long  *par )    能接受指针作为参数的函数 也能接受数组作为参数 ：    eg. 
+  
+  int main ()
+{
+   // 带有 5 个元素的整型数组
+   int balance[5] = {1000, 2, 3, 17, 50};
+   double avg;
+ 
+   // 传递一个指向数组的指针作为参数
+   avg = getAverage( balance, 5 ) ;
+ 
+   // 输出返回值
+   cout << "Average value is: " << avg << endl; 
+    
+   return 0;
+}
+ 
+double getAverage(int *arr, int size)
+{
+  int    i, sum = 0;       
+  double avg;          
+ 
+  for (i = 0; i < size; ++i)
+  {
+    sum += arr[i];
+   }
+ 
+  avg = double(sum) / size;
+ 
+  return avg;
+}
+
+
+5. Ｃ++ 函数传递 ：　　１）　将变量名作为实参和形参　这时传给形参的是变量的值　传递是单向的　在函数体内改变值并不会传回实参　对原来的值不影响
+　　　　　　　　　　２）　传递变量的指针　　形参是指针变量　实参是一个变量的地址　通过形参指针可以改变实参的值
+　　　　　　　　　　３）　传递变量的引用　　同样引用是指向变量的地址　会改变实参的值　void swap(int &x, int &y);
+
+引用作为返回值：  double & setValues(  int i ) {  ...  }
+（1）以引用返回函数值，定义函数时需要在函数名前加 &
+
+（2）用引用返回一个函数值的最大好处是，在内存中不产生被返回值的副本。
+
+引用作为返回值，必须遵守以下规则：
+
+（1）不能返回局部变量的引用。主要原因是局部变量会在函数返回后被销毁，因此被返回的引用就成为了"无所指"的引用，程序会进入未知状态。
+ （2）不能返回函数内部new分配的内存的引用。虽然不存在局部变量的被动销毁问题，可对于这种情况（返回函数内部new分配内存的引用），又面临其它尴尬局面。例如，被函数返回的引用只是作为一 个临时变量出现，而没有被赋予一个实际的变量，那么这个引用所指向的空间（由new分配）就无法释放，造成memory leak。
+ （3）可以返回类成员的引用，但最好是const。主要原因是当对象的属性是与某种业务规则（business rule）相关联的时候，其赋值常常与某些其它属性或者对象的状态有关，因此有必要将赋值操作封装在一个业务规则当中。如果其它对象可以获得该属性的非常 量引用（或指针），那么对该属性的单纯赋值就会破坏业务规则的完整性。
+
+6.    struct  结构体定义  如下声明一个结构体类型 Books  变量为 book；  访问 用 .  访问   book.title
+struct Books
+{
+   char  title[50];
+   char  author[50];
+   char  subject[100];
+   int   book_id;
+} book;
+
+=7=  类的成员函数  可以定义在类的内部   或者 单独使用   范围解析运算符 ::  来定义  ；  在类中定义的成员函数把函数声明为 内联 的.
+class Box
+{
+   public:
+      double length;         // 长度
+      double breadth;        // 宽度
+      double height;         // 高度
+ 
+      // 成员函数声明
+      double getVolume(void);
+      void setLength( double len );
+      void setBreadth( double bre );
+      void setHeight( double hei ) {  ...  } 
+};
+// 成员函数定义
+double Box::getVolume(void)
+{
+    return length * breadth * height;
+}
+ 
+构造函数  与C#基本一致   用初始化列表初始化字段   eg.  
+class Animal
+{
+     public:
+               Animal();
+               ~Animal();
+     public:
+              string  name;
+              int  age;
+}
+// 构造函数  这样就给 name 赋值了  如果有多个字段 只需在后面用逗号分开即可  另外在初始化时 是按照声明的顺序初始化  而并非按照 初始化列表中的顺序初始化
+Animal::Animal() : name( "DOG" ) , age( 100 )
+{
+}
+// 析构函数   在每次删除所创建的对象时执行   不返回任何值 也不能带有任何参数
+Animal::~Animal()
+{
+}
+
+=8=  
+vector  的使用
+头文件 ： #include<vector>  ；  vector 的初始化 ： （1） vector<int> v(10)    // 初始化size为10 ;   vector<int> v( 10, 1 )   // 初始化size为10 每个元素赋值为 1 
+ (  2 )  vector<int> v    v.reserve(10); // 尽量用reserve来减少不必要的内存分配 同(1)     （3） vector<int>  v( &v1[ 0 ],  &v1[ 9 ] );  // 用已有数组的 元素指针 来作为迭代器使用 
+判断vector 是否为空时  尽量使用  empty  而不是  size() == 0 
+
+vector.back()  :  返回最后一个元素   vector.front() :  返回 第一个元素    vector.clear() ：  清空 vector  ； vector.push_back(5)  :  往vector后面插入一个元素 5   
+vector.pop_back() :  删除 vector 最后一个元素 ；  
+vector.insert(  vector.begin()+1, 5 ) ：在vector的第2个元素后面 插入 5 ；   
+vector.insert(  vector.begin()+1, 3, 5 ) :  在vector的第2个元素后面 插入 3 个数 值都是 5；
+vector.insert(  vector.begin()+1, b+3, b+6) : 在vector的第2个元素后 插入 b数组的 第3个元素 到 第5个元素 （不包括 b+6） 也就是 左闭右开 [ start,  end )  ;
+
+vector.size() : 返回 vector 中元素个数  ；   vector.capacity() ： 返回 vector 在内存中总共可以容纳的元素个数   ;   vector.max_size() : 返回 vector 最大可以存储的元素个数
+vector.resize(10)：将vector的元素个数 调整至 10 个，多删少补 其值随机 ；  vector.resize( 10, 2 ) : 将vector现有元素个数调至10个，其值为 2；
+
+#include<algorithm> 几个算法：  下列范围均为 左闭右开 [ begin, end)
+1）  sort（ a.begin(), a.end() )  :   对 a 中从begin到end 的元素进行 从小到大排列；
+2）  reverse（a.begin(), a.end()） ： 对 a 中从begin到end 的元素倒置；
+3） copy（ a.begin(),a.end(),b.begin()+1 ） ：把 a 中begin到end 的元素 复制 到 b 中， 从 b 的第2个元素( 包括该元素 )开始复制，覆盖掉原有元素；
+4） find（ a.begin(), a.end(), 10） ：　在 a 中begin到end的元素中 查找 10   找到则返回其位置
+
+
+=9=     
+ to_string()  转字符串形式  类似于C# .toString();   发现 c++里类似于 toXXX()  等同于 c#里 后面的 .toXXX();    
+ string  转  char*    1)  可以通过 string 提供的 c_str() 函数来实现   该函数 返回 一个以 ' \0 '结尾的 字符数组
+                               最好不要这样用： char* c ; string s="AAA"; c = s.c_str();   //  这样 c 最后指向的内容是垃圾 因为 s 对象被析构
+                               正确使用方法： char c[20]; string s="AAAA"; strcpy( c, s.c_str());  //
+                          
+                             2)  可以通过  data() 函数来实现    const char *p = s.data();    该函数返回的是 不包含' \0 '的字符串内容；
+  substr()  截取字符串  两个参数 第一个为 起始索引  第二个为 截取长度       
+  
+= 10 =    
+#include<stack> 栈数组头文件   #include<unordered_set>  无序集合
+声明：  stack<int>  s;      操作类似于c#   s.top()  获得栈顶元素  s.push() 入栈  s.pop() 出栈  s.empty()  栈是否为空
+            unordered_set<int>  uset;    类似迭代器  也有  begin()  end()   等  uset.find(2)  找到集合中值为 2的元素地址   count(2)  返回集合中值 2 的元素个数   insert( 2 ) 在集合后面插入 2
+                 
